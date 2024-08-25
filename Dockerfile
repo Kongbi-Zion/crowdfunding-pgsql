@@ -5,6 +5,15 @@ RUN echo "\e[1;33mInstall COMPOSER\e[0m" && \
     curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
 
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd
+
+# Copy PHP configuration
+COPY php.ini /usr/local/etc/php/
+
 # Install PHP extensions and tools
 RUN apt-get update && \
     apt-get -y install apt-utils nano wget dialog vim && \
@@ -29,4 +38,5 @@ RUN apt-get update && \
     docker-php-ext-install pdo pdo_pgsql pgsql && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 80
+# Expose port 9000
+EXPOSE 9000
