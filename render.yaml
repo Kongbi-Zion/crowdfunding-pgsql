@@ -1,14 +1,49 @@
 services:
-  - type: web
-    name: laravel-app
-    env: docker
-    plan: free
-    dockerfilePath: Dockerfile
-    buildCommand: composer install --optimize-autoloader --no-dev
-    startCommand: service nginx start && php-fpm
-    envVars:
-      - key: APP_ENV
-        value: production
-      - key: APP_DEBUG
-        value: false
-    port: 80
+  # Web Server Service
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - app
+      - dpg-cr5g5g3v2p9s73agode0-a
+
+  #Database Service
+  dpg-cr5g5g3v2p9s73agode0-a:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: crowdfunding_gn9o
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: ire11W4NOaAspjRG20jI8JrhXE1rMo9L
+
+  # Application Service
+  app:
+    container_name: blog
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www
+    ports:
+      - "9000:9000"
+    working_dir: /var/www
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgAdmin
+    ports:
+      - "5050:80"
+    depends_on:
+      - dpg-cr5g5g3v2p9s73agode0-a
+    environment:
+      PGADMIN_DEFAULT_EMAIL: kongbizion3@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: ire11W4NOaAspjRG20jI8JrhXE1rMo9L
