@@ -21,21 +21,21 @@ services:
         ports:
             - "5432:5432"
         environment:
-            POSTGRES_DB: crowdfunding_gn9o
-            POSTGRES_USER: root
-            POSTGRES_PASSWORD: ire11W4NOaAspjRG20jI8JrhXE1rMo9L
+            POSTGRES_DB: ${DB_DATABASE}
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
 
     # Application Service
     app:
-        container_name: blog
+        container_name: crowdfunding
         build:
             context: .
             dockerfile: Dockerfile
         volumes:
             - .:/var/www
-        ports:
-            - "9000:9000"
         working_dir: /var/www
+        depends_on:
+            - dpg-cr5g5g3v2p9s73agode0-a
 
     pgadmin:
         image: dpage/pgadmin4
@@ -45,5 +45,5 @@ services:
         depends_on:
             - dpg-cr5g5g3v2p9s73agode0-a
         environment:
-            PGADMIN_DEFAULT_EMAIL: kongbizion3@gmail.com
-            PGADMIN_DEFAULT_PASSWORD: ire11W4NOaAspjRG20jI8JrhXE1rMo9L
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
