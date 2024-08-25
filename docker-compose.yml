@@ -36,6 +36,8 @@ services:
         working_dir: /var/www
         depends_on:
             - dpg-cr5g5g3v2p9s73agode0-a
+        expose:
+            - "9000"
 
     pgadmin:
         image: dpage/pgadmin4
