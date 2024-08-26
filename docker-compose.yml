@@ -10,7 +10,6 @@ services:
             - ./nginx/conf.d/:/etc/nginx/conf.d/
         depends_on:
             - app
-            - php-fpm
             - dpg-cr5g5g3v2p9s73agode0-a
 
     #Database Service
@@ -37,8 +36,6 @@ services:
         working_dir: /var/www
         depends_on:
             - dpg-cr5g5g3v2p9s73agode0-a
-        ports:
-            - "9000:9000"
         expose:
             - "9000"
 
@@ -51,12 +48,4 @@ services:
             - dpg-cr5g5g3v2p9s73agode0-a
         environment:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-
-    php-fpm:
-        image: php:8.2.11-fpm
-        container_name: php-fpm
-        volumes:
-            - .:/var/www
-        expose:
-            - "9000"
+            PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD}
