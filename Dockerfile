@@ -38,3 +38,7 @@ RUN echo "\e[1;33mInstall PHP Extensions and Libraries\e[0m" \
     && docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Expose ports
+EXPOSE 80
+EXPOSE 9000
