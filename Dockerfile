@@ -1,38 +1,23 @@
-FROM php:8.2.11-fpm
+FROM richarvey/nginx-php-fpm:latest
 
-# Install Composer and PHP Extensions
-RUN echo "\e[1;33mInstall Composer and PHP Extensions\e[0m" \
-    && apt-get update \
-    && apt-get -y install \
-        apt-utils \
-        nano \
-        wget \
-        dialog \
-        vim \
-        build-essential \
-        git \
-        curl \
-        libcurl4 \
-        libcurl4-openssl-dev \
-        zlib1g-dev \
-        libzip-dev \
-        zip \
-        libbz2-dev \
-        locales \
-        libicu-dev \
-        libonig-dev \
-        libxml2-dev \
-        libpq-dev \
-    && docker-php-ext-install \
-        pdo \
-        pdo_mysql \
-        pdo_pgsql \
-        pgsql \
-    && curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+COPY . .
 
-# Expose ports
-EXPOSE 80
-EXPOSE 9000
+# Image config
+ENV SKIP_COMPOSER 1
+ENV WEBROOT /var/www/html/public
+ENV PHP_ERRORS_STDERR 1
+ENV RUN_SCRIPTS 1
+ENV REAL_IP_HEADER 1
+
+# Laravel config
+ENV APP_ENV production
+ENV APP_DEBUG false
+ENV LOG_CHANNEL stderr
+
+# Allow composer to run as root
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+# Install node and npm for Vite
+# RUN apk add --update nodejs npm
+
+CMD ["/start.sh"]
