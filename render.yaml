@@ -1,0 +1,68 @@
+services:
+  - type: web
+    name: nginx
+    env: docker
+    plan: free # or specify a plan such as 'starter' or 'standard'
+    buildCommand: ""
+    startCommand: ""
+    dockerfilePath: "./Dockerfile"
+    dockerContextPath: "."
+    ports:
+      - 80
+    volumes:
+      - source: "."
+        target: "/var/www"
+      - source: "./nginx/conf.d/"
+        target: "/etc/nginx/conf.d/"
+    healthCheckPath: "/"
+    # Note: The web service will not have a `depends_on` equivalent
+
+  - type: database
+    name: postgres
+    env: docker
+    plan: free # or specify a plan such as 'starter' or 'standard'
+    buildCommand: ""
+    startCommand: ""
+    dockerfilePath: "./Dockerfile"
+    dockerContextPath: "."
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - source: "./postgresql/data"
+        target: "/var/lib/postgresql/data"
+    ports:
+      - 5432
+
+  - type: web
+    name: pgadmin
+    env: docker
+    plan: free # or specify a plan such as 'starter' or 'standard'
+    buildCommand: ""
+    startCommand: ""
+    dockerfilePath: "./Dockerfile"
+    dockerContextPath: "."
+    ports:
+      - 5050
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD}
+    healthCheckPath: "/"
+    # The `depends_on` behavior is typically managed via configuration in Render
+
+  - type: web
+    name: app
+    env: docker
+    plan: free # or specify a plan such as 'starter' or 'standard'
+    buildCommand: ""
+    startCommand: ""
+    dockerfilePath: "./Dockerfile"
+    dockerContextPath: "."
+    ports:
+      - 9000
+    volumes:
+      - source: "."
+        target: "/var/www"
+    workingDir: "/var/www"
+    healthCheckPath: "/"
