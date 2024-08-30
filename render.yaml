@@ -1,0 +1,52 @@
+services:
+  - name: nginx
+    type: web
+    env: docker
+    dockerfilePath: ./Dockerfile
+    buildCommand: ""
+    startCommand: nginx -g 'daemon off;'
+    plan: free
+    envVars:
+      - key: RENDER_EXTERNAL_HOSTNAME
+        value: yourdomain.onrender.com
+    ports:
+      - port: 80
+
+  - name: postgres
+    type: database
+    plan: free
+    postgresVersion: 13
+    databases:
+      - name: ${DB_DATABASE}
+        user: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+
+  - name: app
+    type: web
+    env: docker
+    dockerfilePath: ./Dockerfile
+    buildCommand: composer install
+    startCommand: php artisan serve --host 0.0.0.0 --port 9000
+    plan: free
+    envVars:
+      - key: DB_HOST
+        value: postgres
+      - key: DB_PORT
+        value: 5432
+    ports:
+      - port: 9000
+
+  - name: pgadmin
+    type: web
+    env: docker
+    dockerfilePath: ./Dockerfile
+    startCommand: ""
+    buildCommand: ""
+    plan: free
+    envVars:
+      - key: PGADMIN_DEFAULT_EMAIL
+        value: ${PGADMIN_DEFAULT_EMAIL}
+      - key: PGADMIN_DEFAULT_PASSWORD
+        value: ${DB_PASSWORD}
+    ports:
+      - port: 5050
