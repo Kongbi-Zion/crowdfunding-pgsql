@@ -2,7 +2,7 @@ services:
   - type: web
     name: nginx
     env: docker
-    plan: free # or specify a plan such as 'starter' or 'standard'
+    plan: free
     dockerfilePath: "./Dockerfile"
     dockerContextPath: "."
     ports:
@@ -14,11 +14,25 @@ services:
         target: "/etc/nginx/conf.d/"
     healthCheckPath: "/"
 
+  - type: web
+    name: app
+    env: docker
+    plan: free
+    dockerfilePath: "./Dockerfile"
+    dockerContextPath: "."
+    ports:
+      - 9000
+    volumes:
+      - source: "."
+        target: "/var/www"
+    workingDir: "/var/www"
+    healthCheckPath: "/"
+
   - type: database
     name: postgres
     env: docker
-    plan: free # or specify a plan such as 'starter' or 'standard'
-    dockerfilePath: "./Dockerfile" # Ensure this is correct or remove if not needed
+    plan: free
+    dockerfilePath: "./Dockerfile"
     dockerContextPath: "."
     environment:
       POSTGRES_DB: ${DB_DATABASE}
@@ -33,26 +47,12 @@ services:
   - type: web
     name: pgadmin
     env: docker
-    plan: free # or specify a plan such as 'starter' or 'standard'
-    dockerfilePath: "./Dockerfile" # Ensure this is correct or remove if not needed
+    plan: free
+    dockerfilePath: "./Dockerfile"
     dockerContextPath: "."
     ports:
       - 5050
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD}
-    healthCheckPath: "/"
-
-  - type: web
-    name: app
-    env: docker
-    plan: free # or specify a plan such as 'starter' or 'standard'
-    dockerfilePath: "./Dockerfile"
-    dockerContextPath: "."
-    ports:
-      - 9000
-    volumes:
-      - source: "."
-        target: "/var/www"
-    workingDir: "/var/www"
     healthCheckPath: "/"
