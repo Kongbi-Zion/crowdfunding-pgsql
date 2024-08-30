@@ -1,13 +1,7 @@
 FROM php:8.2.11-fpm
 
-# Install Composer
-RUN echo "\e[1;33mInstall Composer\e[0m" \
-    && cd /tmp \
-    && curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer
-
-# Install required extensions and libraries
-RUN echo "\e[1;33mInstall PHP Extensions and Libraries\e[0m" \
+# Install Composer and PHP Extensions
+RUN echo "\e[1;33mInstall Composer and PHP Extensions\e[0m" \
     && apt-get update \
     && apt-get -y install \
         apt-utils \
@@ -25,7 +19,6 @@ RUN echo "\e[1;33mInstall PHP Extensions and Libraries\e[0m" \
         zip \
         libbz2-dev \
         locales \
-        libmcrypt-dev \
         libicu-dev \
         libonig-dev \
         libxml2-dev \
@@ -35,7 +28,8 @@ RUN echo "\e[1;33mInstall PHP Extensions and Libraries\e[0m" \
         pdo_mysql \
         pdo_pgsql \
         pgsql \
-    && docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
+    && curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
